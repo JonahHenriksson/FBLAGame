@@ -1,17 +1,14 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 int main()
 {
+	sf::Clock clock1;
+	sf::Time time1;
+	
 	sf::RenderWindow window(sf::VideoMode(800, 600),
-		"Hello SFML", sf::Style::Default);
+		"Future Business Leaders of America: A Year in the Life", sf::Style::Default);
 
-	sf::Font font;
-	font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
-
-	sf::Text text;
-	text.setFont(font);
-	text.setPosition(200, 200);
-	text.setString("Hello SFML");
 
 	while (window.isOpen())
 	{
@@ -22,7 +19,8 @@ int main()
 				window.close();
 		}
 		window.clear();
-		window.draw(text);
+		time1 = clock1.getElapsedTime().asSeconds;
+		
 		window.display();
 	}
 
