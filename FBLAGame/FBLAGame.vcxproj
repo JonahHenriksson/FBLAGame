@@ -16,6 +16,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B0E27588-6F21-4DF0-82D0-90CA65E8534C}</ProjectGuid>
