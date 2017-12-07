@@ -328,28 +328,46 @@ std::string toString(std::int32_t integer)
 
 int main()
 {	
+	int time = 0;
 	int px = 450;
 	int py = 300;
 	int ptx = 0;
 	int pty = 0;
 	int screenX = 0;
 	int screenY = 0;
-	bool plyrmveup = true;
-	bool plyrmveright = true;
-	bool plyrmvedown = true;
-	bool plyrmveleft = true;
 	bool plyrmve = true;
 	bool plyrvis = true;
-	bool gameBegin = true;
-	bool outside = true;
-	bool house = false;
+	bool gameBegin = false;
+	bool outside = false;
+	bool house = true;
+	bool school = false;
 	bool drawspc1 = true;
 	bool drawspc2 = false;
 	bool drawspc3 = false;
 	bool drawspc4 = false;
+	bool test = false;
+	int q1 = 0, q2 = 0, q3 = 0, q4 = 0, q5 = 0, q6 = 0, q7 = 0, q8 = 0, q9 = 0, q10 = 0;
+	int q = 1;
+	int score = 0;
+	int testPos = 0;
+	bool showScore = false;
 	//text
 	sf::Font font;
 	font.loadFromFile("assets/FONT.ttf");
+
+	sf::Text startText;
+	startText.setString("Press 'Space' To Start");
+	startText.setFont(font);
+	startText.setFillColor(sf::Color(25,25,25));
+	startText.setPosition(280, 500);
+	startText.setCharacterSize(10);
+
+	sf::Text logoText;
+	logoText.setString("THE GAME");
+	logoText.setFont(font);
+	logoText.setFillColor(sf::Color(25, 25, 25));
+	logoText.setPosition(240, 405);
+	logoText.setCharacterSize(30);
 
 	sf::Text coordinates;
 	coordinates.setString("("+toString(px)+"," + toString(py)+")");
@@ -358,10 +376,40 @@ int main()
 	coordinates.setPosition(10, 20);
 	coordinates.setCharacterSize(10);
 
+	sf::Text computerText;
+	computerText.setString("Press 'z' To Enter Test");
+	computerText.setFont(font);
+	computerText.setFillColor(sf::Color::White);
+	computerText.setPosition(130, 185);
+	computerText.setCharacterSize(10);
+
+	sf::Text scoreText;
+	scoreText.setString("Your Score Is "+toString(score));
+	scoreText.setFont(font);
+	scoreText.setFillColor(sf::Color::Red);
+	scoreText.setPosition(400, 50);
+	scoreText.setCharacterSize(10);
+
+	sf::Text questionNumber;
+	questionNumber.setString("Question Number" + toString(q));
+	questionNumber.setFont(font);
+	questionNumber.setFillColor(sf::Color::Green);
+	questionNumber.setPosition(300, 20);
+	questionNumber.setCharacterSize(10);
+
 	//textures
+	sf::Texture testTx;
+	if (!testTx.loadFromFile("assets/test1.png")) {
+		std::cout << "Could not load: assets/test1.png" << std::endl;
+	}
+	sf::Sprite testSp(testTx);
+	testSp.setTextureRect(sf::IntRect(0, testPos, 500, 2000));
+	testSp.setPosition(10, 30);
+	testSp.scale(0.25, 0.25);
+
 	sf::Texture characterTex;
 	if (!characterTex.loadFromFile("assets/SpriteSheet.png")) {
-		std::cout << "Could not load: SpriteSheet.png" << std::endl;
+		std::cout << "Could not load: assets/SpriteSheet.png" << std::endl;
 	}
 	sf::IntRect spritePos(ptx, pty, 460, 590);
 	sf::Sprite player(characterTex, spritePos);
@@ -371,6 +419,11 @@ int main()
 	window.setIcon(sfml_icon.width, sfml_icon.height, sfml_icon.pixel_data);
 	window.setFramerateLimit(30);
 	//loading textures
+	sf::Texture computerTx;
+	if (!computerTx.loadFromFile("assets/computer.png")) {
+		std::cout << "Loading assets/computer.png: FAILED" << std::endl;
+	}
+
 	sf::Texture grassTx;
 	if (!grassTx.loadFromFile("assets/grass.png"))
 	{
@@ -424,9 +477,30 @@ int main()
 	schoolOutsideSp.setPosition(350, 350);
 	schoolOutsideSp.scale(0.5, 0.5);
 
+	sf::Sprite schoolSp(artTx);
+	schoolSp.setTextureRect(sf::IntRect(62 * 28, 30 * 28, 35 * 32, 23 * 32));
+	schoolSp.setPosition(100, 100);
+	schoolSp.scale(0.5, 0.5);
+
+	sf::Sprite tableSp(artTx);
+	tableSp.setTextureRect(sf::IntRect(24 * 28.5, 0, 3 * 32.3, 3 * 32));
+	tableSp.setPosition(200, 200);
+	tableSp.scale(0.5, 0.5);
+
+	sf::Sprite computerSp(computerTx);
+	computerSp.scale(0.03, 0.03);
+	computerSp.setPosition(205, 205);
+
+	sf::Texture logoTx;
+	if (!logoTx.loadFromFile("assets/fbla.png"));
+
+	sf::Sprite logoSp(logoTx);
+	logoSp.scale(0.5, 0.5);
+	logoSp.setPosition(200, 100);
 
 	while (window.isOpen())
 	{
+		plyrmve = true;
 		plyrvis = true;
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -435,7 +509,85 @@ int main()
 				window.close();
 			if (event.key.code == sf::Keyboard::Escape)
 				window.close();
-			if (event.key.code == sf::Keyboard::Left) {
+			if (event.key.code == sf::Keyboard::Space && !gameBegin)
+				gameBegin = true;
+			if (event.key.code == sf::Keyboard::Z && px > 160 && py > 170 && px < 250 && py < 240) {
+				test = true;
+			}
+			if (event.key.code == sf::Keyboard::A && test && time > 120) {
+				if (q == 8) {
+					q8 = 1;
+					q = q + 1;
+
+				}
+				if (q == 10) {
+					q10 = 1;
+					q = q + 1;
+
+				}
+				else
+					q = q + 1;
+				time = 0;
+				break;
+			}
+			if (event.key.code == sf::Keyboard::B && test && time > 120) {
+				if (q == 1) {
+					q1 = 1;
+					q = q + 1;
+				}
+				if (q == 2) {
+					q2 = 1;
+					q = q + 1;
+
+				}
+				if (q == 9) {
+					q9 = 1;
+					q = q + 1;
+
+				}
+				else
+					q = q + 1;
+				time = 0;
+				break;
+			}
+			if (event.key.code == sf::Keyboard::C && test && time > 120) {
+				if (q == 4) {
+					q4 = 1;
+					q = q + 1;
+
+				}
+				if (q == 7) {
+					q7 = 1;
+					q = q + 1;
+
+				}
+				else
+					q = q + 1;
+				time = 0;
+				break;
+			}
+			if (event.key.code == sf::Keyboard::D && test && time > 120) {
+				if (q == 2) {
+					q2 = 1;
+					q = q + 1;
+
+				}
+				if (q == 5) {
+					q5 = 1;
+					q = q + 1;
+
+				}
+				if (q == 6) {
+					q6 = 1;
+					q = q + 1;
+
+				}
+				else
+					q = q + 1;
+				time = 0;
+				break;
+			}
+			if (event.key.code == sf::Keyboard::Left && plyrmve) {
 				px = px - 10;
 				if (pty != 1120) {
 					pty = 1210;
@@ -457,7 +609,7 @@ int main()
 					break;
 				}
 			}
-			if (event.key.code == sf::Keyboard::Right) {
+			if (event.key.code == sf::Keyboard::Right && plyrmve) {
 				px = px + 10;
 				if (pty != 590) {
 					pty = 590;
@@ -479,7 +631,7 @@ int main()
 					break;
 				}
 			}
-			if (event.key.code == sf::Keyboard::Up) {
+			if (event.key.code == sf::Keyboard::Up && plyrmve) {
 				py = py - 10;
 				if (pty != 1810) {
 					pty = 1810;
@@ -501,7 +653,7 @@ int main()
 					break;
 				}
 			}
-			if (event.key.code == sf::Keyboard::Down)
+			if (event.key.code == sf::Keyboard::Down && plyrmve)
 			{
 				py = py + 10;
 				if (pty != 0) {
@@ -575,15 +727,21 @@ int main()
 				
 			}
 			if (house) {
-				
-				
-				
+				window.draw(houseSp);
+	
+			}
+			if (school) {
+				window.draw(schoolSp);
+				window.draw(tableSp);
+				window.draw(computerSp);
+				window.draw(player);
 			}
 		}
 		if (!gameBegin) {
 			window.draw(skySp);
-
-			window.draw(selectSp);
+			window.draw(logoSp);
+			window.draw(startText);
+			window.draw(logoText);
 		}
 
 		//collision
@@ -631,6 +789,8 @@ int main()
 				}
 				if (px > 200 && px < 230 && py < 370 && py > 340) {
 					outside = true;
+					px = 180;
+					py = 300;
 					house = false;
 				}
 			}
@@ -667,9 +827,77 @@ int main()
 				if (px > 210 && px < 310 && py < 285 && py > 270) {
 					py = 290;
 				}
+					if (py > 260 && py < 290 && px > 160 && px < 200) {
+						house = true;
+						px = 210;
+						py = 400;
+						outside = false;
+					}
+					if (px > 470 && px < 510 && py > 510 && py < 540) {
+						school = true;
+						px = 350;
+						py = 400;
+						outside = false;
+					}
+					
+				
+			}
+			if (school) {
+				if (px > 110 && px < 310 && py > 280 && py < 310) {
+					py = 270;
+				}
+				if (py > 140 && py < 290 && px < 120 && px > 100) {
+					px = 130;
+				}
+				if (px > 110 && px < 610 && py > 120 && py < 160) {
+					py = 150;
+				}
+				if (py > 280 && py < 300 && px > 410 && px < 610) {
+					py = 270;
+				}
+				if (px > 590 && px < 620 && py > 140 && py < 290) {
+					px = 580;
+				}
+				if (py > 290 && px < 310 && py < 430 && px > 290) {
+					px = 320;
+				}
+				if (px > 410 && px < 440 && py > 290 && py < 430) {
+					px = 400;
+				}
+				if (px < 430 && px > 370 && py > 400 && py < 430) {
+					py = 380;
+				}
+				if (py > 400 && py < 430 && px > 300 && px < 340) {
+					py = 380;
+				}
+				if (py > 400) {
+					outside = true;
+					px = 480;
+					py = 560;
+					school = false;
+				}
+				if (py > 180 && py < 230 && px < 245 && px > 230) {
+					px = 250;
+				}
+				if (px > 195 && px < 235 && py > 205 && py < 220) {
+					py = 230;
+				}
+				if (px > 185 && px < 210 && py > 175 && py < 220) {
+					px = 170;
+				}
+				if (py > 175 && py < 190 && px > 185 && px < 230) {
+					py = 170;
+				}
+				if (px > 160 && py > 170 && px < 250 && py < 240) {
+					window.draw(computerText);
+				}
+				if (test) {
+					plyrmve = false;
+					window.draw(testSp);
+				}
 			}
 		}
-		if (plyrvis && drawspc1) {
+		if (plyrvis && drawspc1 && gameBegin) {
 			window.draw(player);
 		}
 		if (px < 0) {
@@ -684,11 +912,30 @@ int main()
 		if (py > 590) {
 			py = 580;
 		}
+		if (q == 11) {
+			score = q1 + q2 + q3 + q4 + q5 + q6 + q7 + q8 + q9 + q10;
+			scoreText.setString("Your Score Is " + toString(score));
+			q++;
+			showScore = true;
+		}
+		if (q > 5) {
+			testSp.setPosition(10, -75);
+		}
+		if (q > 11) {
+			q = 11;
+		}
+		if (showScore) {
+			window.draw(scoreText);
+		}
 		spritePos = sf::IntRect(ptx, pty, 460, 590);
 		player = sf::Sprite(characterTex, spritePos);
 		player.scale(0.05, 0.05);
 		houseSp.setPosition(100, 200);
+		questionNumber.setString("Question Number" + toString(q));
 		window.draw(coordinates);
+		window.draw(questionNumber);
+		testSp.setTextureRect(sf::IntRect(0, 0, 2550,3300));
+		time++;
 		window.display();
 	}
 
